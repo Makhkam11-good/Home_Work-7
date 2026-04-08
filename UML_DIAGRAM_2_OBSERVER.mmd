@@ -1,0 +1,106 @@
+// UML Diagram 2: Observer Pattern
+// Можно визуализировать на mermaid.live
+
+classDiagram
+    class GameObserver {
+        <<interface>>
+        +onEvent(GameEvent)
+    }
+
+    class GameEvent {
+        -type: GameEventType
+        -sourceName: String
+        -value: int
+        +getType() GameEventType
+        +getSourceName() String
+        +getValue() int
+    }
+
+    class GameEventType {
+        <<enumeration>>
+        ATTACK_LANDED
+        HERO_LOW_HP
+        HERO_DIED
+        BOSS_PHASE_CHANGED
+        BOSS_DEFEATED
+    }
+
+    class EventPublisher {
+        -observers: List~GameObserver~
+        +registerObserver(GameObserver)
+        +unregisterObserver(GameObserver)
+        +fireEvent(GameEvent)
+    }
+
+    class BattleLogger {
+        +onEvent(GameEvent)
+    }
+
+    class AchievementTracker {
+        -unlockedAchievements: Set~String~
+        -attackCount: int
+        +onEvent(GameEvent)
+    }
+
+    class PartySupport {
+        -heroes: List~Hero~
+        -random: Random
+        +PartySupport(List~Hero~)
+        +onEvent(GameEvent)
+    }
+
+    class HeroStatusMonitor {
+        -heroes: List~Hero~
+        +HeroStatusMonitor(List~Hero~)
+        +onEvent(GameEvent)
+    }
+
+    class LootDropper {
+        -PHASE_LOOT: String[]
+        -BOSS_LOOT: String[]
+        +onEvent(GameEvent)
+    }
+
+    class DungeonBoss {
+        -name: String
+        -hp: int
+        -maxHp: int
+        -attackPower: int
+        -defense: int
+        -currentPhase: int
+        -strategy: CombatStrategy
+        -publisher: EventPublisher
+        +DungeonBoss(String, int, int, int, EventPublisher)
+        +onEvent(GameEvent)
+        +takeDamage(int)
+    }
+
+    class DungeonEngine {
+        -heroes: List~Hero~
+        -boss: DungeonBoss
+        -publisher: EventPublisher
+        +DungeonEngine(List~Hero~, DungeonBoss, EventPublisher)
+        +runEncounter() EncounterResult
+    }
+
+    GameObserver <|.. BattleLogger
+    GameObserver <|.. AchievementTracker
+    GameObserver <|.. PartySupport
+    GameObserver <|.. HeroStatusMonitor
+    GameObserver <|.. LootDropper
+    GameObserver <|.. DungeonBoss
+
+    EventPublisher --> GameObserver : notifies
+    EventPublisher --> GameEvent : fires
+    GameEvent --> GameEventType : contains
+
+    BattleLogger --> GameEvent : reacts to
+    AchievementTracker --> GameEvent : reacts to
+    PartySupport --> GameEvent : reacts to
+    HeroStatusMonitor --> GameEvent : reacts to
+    LootDropper --> GameEvent : reacts to
+    DungeonBoss --> GameEvent : reacts to
+
+    DungeonEngine --> EventPublisher : uses
+    DungeonEngine --> DungeonBoss : orchestrates
+    DungeonBoss --> EventPublisher : registers with

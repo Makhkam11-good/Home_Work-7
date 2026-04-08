@@ -1,0 +1,93 @@
+// UML Diagram 1: Strategy Pattern
+// Можно визуализировать на mermaid.live
+
+classDiagram
+    class CombatStrategy {
+        <<interface>>
+        +calculateDamage(int) int
+        +calculateDefense(int) int
+        +getName() String
+    }
+
+    class Hero {
+        -name: String
+        -hp: int
+        -maxHp: int
+        -attackPower: int
+        -defense: int
+        -strategy: CombatStrategy
+        +getHp() int
+        +getMaxHp() int
+        +getAttackPower() int
+        +getDefense() int
+        +getStrategy() CombatStrategy
+        +setStrategy(CombatStrategy)
+        +takeDamage(int)
+        +heal(int)
+        +isAlive() boolean
+    }
+
+    class DungeonBoss {
+        -name: String
+        -hp: int
+        -maxHp: int
+        -attackPower: int
+        -defense: int
+        -currentPhase: int
+        -strategy: CombatStrategy
+        -publisher: EventPublisher
+        +getHp() int
+        +getMaxHp() int
+        +getAttackPower() int
+        +getDefense() int
+        +getCurrentPhase() int
+        +getStrategy() CombatStrategy
+        +takeDamage(int)
+        +isAlive() boolean
+    }
+
+    class AggressiveStrategy {
+        +calculateDamage(int) int
+        +calculateDefense(int) int
+        +getName() String
+    }
+
+    class DefensiveStrategy {
+        +calculateDamage(int) int
+        +calculateDefense(int) int
+        +getName() String
+    }
+
+    class BalancedStrategy {
+        +calculateDamage(int) int
+        +calculateDefense(int) int
+        +getName() String
+    }
+
+    class Phase1Strategy {
+        +calculateDamage(int) int
+        +calculateDefense(int) int
+        +getName() String
+    }
+
+    class Phase2Strategy {
+        +calculateDamage(int) int
+        +calculateDefense(int) int
+        +getName() String
+    }
+
+    class Phase3Strategy {
+        +calculateDamage(int) int
+        +calculateDefense(int) int
+        +getName() String
+    }
+
+    CombatStrategy <|.. AggressiveStrategy
+    CombatStrategy <|.. DefensiveStrategy
+    CombatStrategy <|.. BalancedStrategy
+    CombatStrategy <|.. Phase1Strategy
+    CombatStrategy <|.. Phase2Strategy
+    CombatStrategy <|.. Phase3Strategy
+
+    Hero --> CombatStrategy : uses
+    DungeonBoss --> CombatStrategy : uses
